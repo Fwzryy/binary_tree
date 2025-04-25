@@ -40,7 +40,7 @@ class NodeProduk:
 ```
 Mendefinisikan sebuah class bernama `NodeProduk`, Class ini digunakan untuk merepresentasikan satu produk dalam sistem katalog. Setiap node (produk) akan menyimpan nama, harga, dan sambungan ke produk lain (kiri dan kanan).  
 `def __init__(self, nama, harga)` Ini adalah fungsi konstruktor. Fungsi ini akan otomatis dijalankan saat objek NodeProduk baru dibuat. Parameter: `self` Instance objek dari class NodeProduk (python mengisi otomatis), `nama`, `harga`   
-`self.left = None` Menyiapkan sambungan ke sisi kiri dari node ini. di set ke None untuk nilai awal, begitu juga bagian kanan `self.right = None` 
+`self.left = None` Menyiapkan sambungan ke sisi kiri dari node ini. di set ke None untuk nilai awal, begitu juga bagian kanan
 
 ### 3. Kelas `KatalogProduk`
 #### a. Konstruktor
