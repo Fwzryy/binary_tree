@@ -1,12 +1,6 @@
 # 📦 Katalog Produk - Binary Tree (Non-BST)
 
 Program Python ini adalah aplikasi terminal interaktif untuk mengelola data produk menggunakan struktur **Binary Tree (Non-BST : Binary Search Tree)**. Aplikasi ini memiliki fitur tambah, cari, hapus, tampilkan produk (pre-order traversal), cetak struktur hierarki, serta menyimpan dan memuat data dari file JSON.
-Note => Traversal pre-order berarti kita mengunjungi node-node pada pohon biner dengan urutan sebagai berikut:
-        A
-       / \
-      B   C
-     / \
-    D   E Maka pre-order traversal akan menghasilkan A → B → D → E → C
 
 **Program ini dibuat untuk memenuhi tugas project akhir mata kuliah Struktur Data**
 ---
@@ -44,7 +38,9 @@ class NodeProduk:
         self.left = None
         self.right = None
 ```
-Mewakili satu node dari produk dalam pohon. Menyimpan nama, harga, dan referensi ke anak kiri dan kanan.
+Mendefinisikan sebuah class bernama `NodeProduk`, Class ini digunakan untuk merepresentasikan satu produk dalam sistem katalog. Setiap node (produk) akan menyimpan nama, harga, dan sambungan ke produk lain (kiri dan kanan).
+`def __init__(self, nama, harga)` Ini adalah fungsi konstruktor. Fungsi ini akan otomatis dijalankan saat objek NodeProduk baru dibuat. Parameter: `self` Instance objek dari class NodeProduk (python mengisi otomatis), `nama`, `harga` 
+`self.left = None` Menyiapkan sambungan ke sisi kiri dari node ini. di set ke None untuk nilai awal, begitu juga bagian kanan `self.right = None` 
 
 ### 3. Kelas `KatalogProduk`
 #### a. Konstruktor
