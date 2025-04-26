@@ -2,7 +2,6 @@
 
 Program Python ini adalah aplikasi terminal interaktif untuk mengelola data produk menggunakan struktur **Binary Tree (Non-BST : Binary Search Tree)**. Aplikasi ini memiliki fitur tambah, cari, hapus, tampilkan produk (pre-order traversal), cetak struktur hierarki, serta menyimpan dan memuat data dari file JSON.
 
-**Program ini dibuat untuk memenuhi tugas project akhir mata kuliah Struktur Data**
 ---
 
 ## 🚀 Fitur Utama
@@ -26,7 +25,7 @@ from tabulate import tabulate
 ```
 Digunakan untuk:
 - Untuk menyimpan dan membaca data produk dari file `.json`
--  (`deque` dari `collections`) Struktur antrian yang efisien untuk menambahkan/menghapus dari kedua sisi: kiri dan kanan
+-  (`deque` dari `collections`) Struktur antrian yang efisien untuk menambahkan/menghapus dari anak kiri dan anak kanan
 - (`tabulate`) Untuk mencetak tabel dengan rapi di terminal. 
 
 ### 2. Kelas `NodeProduk`
@@ -40,52 +39,76 @@ class NodeProduk:
 ```
 Mendefinisikan sebuah class bernama `NodeProduk`, Class ini digunakan untuk merepresentasikan satu produk dalam sistem katalog. Setiap node (produk) akan menyimpan nama, harga, dan sambungan ke produk lain (kiri dan kanan).  
 `def __init__(self, nama, harga)` Ini adalah fungsi konstruktor. Fungsi ini akan otomatis dijalankan saat objek NodeProduk baru dibuat. Parameter: `self` Instance objek dari class NodeProduk (python mengisi otomatis), `nama`, `harga`   
-`self.left = None` Menyiapkan sambungan ke sisi kiri dari node ini. di set ke None untuk nilai awal, begitu juga bagian kanan
+`self.left = None` Menyiapkan sambungan ke anak kiri dari node ini. di set ke None untuk nilai awal, begitu juga bagian kanan
 
 ### 3. Kelas `KatalogProduk`
-#### a. Konstruktor
 ```python
-self.root = None
+class KatalogProduk:
+    def __init__(self):
+        self.root = None
 ```
-Membuat pohon kosong.
+Membuat objek katalog dengan akar (root) yang awalnya kosong.
 
-#### b. Tambah Produk
+#### a. Tambah Produk
 ```python
 def tambah_produk(self, nama, harga):
+    node_baru = NodeProduk(nama, harga)
+    if not self.root:
+        self.root = node_baru
+        return
 ```
-Menambahkan produk menggunakan **Breadth-First Insertion** agar tree tetap seimbang dari kiri ke kanan.
+Fungsi `tambah_produk` berguna untuk menambahkan produk baru ke dalam pohon. Pertama, dibuat node baru yang berisi nama dan harga produk menggunakan `NodeProduk(nama, harga)`. Lalu, dicek apakah `self.root` masih kosong; jika kosong, node baru langsung dijadikan akar pohon. Ini penting karena node pertama akan menjadi dasar untuk menambahkan produk-produk berikutnya di pohon.
 
-#### c. Cari Produk
 ```python
-def cari_produk(self, nama):
-```
-Mencari node dengan nama yang sesuai menggunakan traversal rekursif (DFS preorder).
+    queue = deque() #membuat antrian kosong
+    queue.append(self.root) #memasukkan akar pohon(root) ke dalam antrian
 
-#### d. Hapus Produk
-```python
-def hapus_produk(self, nama):
+    while queue: #selama antrian masih ada isinya, proses akan terus berjalan
+        current = queue.popleft() #mengambil node paling depan dari antrian untuk diperiksa
+        if not current.left: #jika node yang sedang diperiksa belum punya anak kiri? 
+            current.left = node_baru #maka node baru langsung ditempatkan di kiri.
+            return
+        elif not current.right: #jika anak kiri sudah ada, tapi anak kanan belum?
+            current.right = node_baru #maka node baru ditempatkan di kanan
+            return
+        else: #kalau kiri dan kanan sudah terisi, anak-anaknya dimasukkan ke antrian supaya nanti diperiksa juga ↓
+            queue.append(current.left)
+            queue.append(current.right)
 ```
-Menghapus node dengan menggantinya dengan node terakhir dan menghapus node terakhir dari pohon.
+
+#### b. Cari Produk
+```python
+def cari_produk(self, nama): #fungsi untuk mencari produk berdasarkan nama
+    return self._cari(self.root, nama) #memanggil fungsi bantu _cari untuk melakukan pencarian secara rekursif mulai dari root.
+    ''' Mencari secara rekursif:
+    - Mulai cari dari root(paling atas), 
+    - kalau tidak ketemu di root, fungsi _cari memanggil dirinya sendiri untuk lanjut cari ke anak kiri, 
+    - kalau belum ketemu juga di kiri, fungsi _cari memanggil dirinya sendiri untuk lanjut cari ke anak kanan
+    Begitu seterusnya sampai ketemu dan semua cabang habis diperiksa✅
+    '''
+def _cari(self, node, nama): #ini dia fungsi rekursif yang akan menelusuri node 1 per 1
+    if not node: #kalau node yang diperiksa kosong(None)?
+        return None #berarti produk tidak ditemukan -> return None
+    if node.nama.lower() == nama.lower(): #jika nama produk di node sekarang sama dengan nama yang dicari(tidak peduli huruf besar-kecil)
+        return node #maka return node itu
+    ditemukan = self._cari(node.left, nama) #kalau belum ketemu, cari di anak kiri terlebih dahulu, simpan ke variable ditemukan
+    if ditemukan: #jika sudah ketemu hasilnya di anak kiri?
+        return ditemukan #return hasilnya
+    return self._cari(node.right, nama) #kalau belum ketemu di kiri, panggil lagi fungsi _cari untuk menelusuri anak kanan.
+
+```
+
+#### c. Hapus Produk
+
 
 #### e. Tampilkan Produk
-```python
-def tampilkan_produk(self):
-```
-Menampilkan semua produk dalam format tabel dengan traversal **pre-order**.
+
 
 #### f. Tampilkan Hierarki
-```python
-def tampilkan_hierarki(self):
-```
-Menampilkan struktur pohon dengan indentasi berdasarkan level dan arah cabang (`root`, `left`, `right`).
+
 
 #### g. Simpan dan Muat File JSON
-```python
-def simpan_ke_file(self, nama_file):
-def muat_dari_file(self, nama_file):
-```
-- Menyimpan struktur tree ke dalam file JSON
-- Memuat dan membangun tree kembali dari file JSON
+
 
 ### 4. Fungsi `menu()`
 ```python
@@ -124,7 +147,7 @@ pip install tabulate
 ```
 3. Jalankan file Python:
 ```bash
-python katalog_produk.py
+python product_catalog.py
 ```
 
 ---
@@ -143,7 +166,7 @@ python katalog_produk.py
 
 ## 📄 Lisensi
 Proyek ini bebas digunakan untuk pembelajaran dan tugas akademik. Tidak untuk tujuan komersial.
-
+(DD/MM/YYYY)
 ---
 
 Silakan fork, clone, dan kembangkan! 🚀
